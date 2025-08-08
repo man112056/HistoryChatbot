@@ -5,6 +5,7 @@ from langchain_community.embeddings import OllamaEmbeddings
 from langchain_community.vectorstores import Chroma
 from langchain.prompts import PromptTemplate
 from langchain_community.llms import Ollama
+from langchain.chains import RetrievalQA
 from langchain_core.chat_history import InMemoryChatMessageHistory
 from dotenv import load_dotenv
 from langsmith import traceable
@@ -14,7 +15,6 @@ import time
 import uuid
 
 load_dotenv()
-LANGCHAIN_TRACING_V2 = True
 
 DB_DIR = "chroma_db"
 COLLECTION_NAME = "historical_figures"
@@ -91,27 +91,18 @@ def chat_historybot(user_input, session_id):
     history = get_session_history(session_id)
     history.add_user_message(user_input)
 
-    # Build chat history text for prompt
-    chat_history_text = ""
-    for msg in history.messages:
-        role = msg.type  # 'human' or 'ai'
-        prefix = "User:" if role == "human" else "Bot:"
-        chat_history_text += f"{prefix} {msg.content}\n"
-
-    # Retrieve relevant docs from vector store
+    # Initialize the RetrievalQA chain
     retriever = vector_store.as_retriever()
-    relevant_docs = retriever.get_relevant_documents(user_input)
-    context_text = "\n".join([doc.page_content for doc in relevant_docs])
-
-    # Format the full prompt text
-    prompt_text = PROMPT.format(
-        chat_history=chat_history_text,
-        context=context_text,
-        question=user_input
+    qa_chain = RetrievalQA.from_chain_type(
+        llm=llm,
+        chain_type="stuff",
+        retriever=retriever,
+        return_source_documents=True,
     )
 
     start = time.time()
-    answer = llm(prompt_text)
+    result = qa_chain({"query": user_input})
+    answer = result["result"]
     print(f"⏱️ Response time: {time.time() - start:.2f} seconds")
 
     history.add_ai_message(answer)
@@ -119,7 +110,7 @@ def chat_historybot(user_input, session_id):
     return answer
 
 with gr.Blocks(css="body { background-color: #D6EF88 !important; }") as demo:
-    gr.Markdown("### Hello, I am HistoryBot. How can I assist you today?")
+    gr.Markdown("Hello, I am HistoryBot, your expert on historical figures. How can I assist you today?")
     chatbot = gr.Chatbot()
     session_id = gr.State(str(uuid.uuid4()))
     with gr.Row():
