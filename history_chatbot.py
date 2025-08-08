@@ -6,31 +6,37 @@ from langchain_community.vectorstores import Chroma
 from langchain.prompts import PromptTemplate
 from langchain_community.llms import Ollama
 from langchain.chains import RetrievalQA
+from langchain.chains.conversational_retrieval.base import ConversationalRetrievalChain
+from langchain.memory import ConversationBufferMemory
+from langchain_core.chat_history import InMemoryChatMessageHistory
 from dotenv import load_dotenv
 
 load_dotenv()
 
-
+# Load and split the document
 loader = PyPDFLoader("historical_figures.pdf")
 document = loader.load()
 
 text_splitter = CharacterTextSplitter(
     chunk_size=200,
-    chunk_overlap=30,)
-
+    chunk_overlap=30,
+)
 docs = text_splitter.split_documents(document)
 print(f"Total number of chunks: {len(docs)}")
-print(document[0].page_content[:500]) 
+print(document[0].page_content[:500])
 
+# Embedding and Vector store
 embedding = OllamaEmbeddings(model="granite-embedding:latest")
 vector_store = Chroma.from_documents(
     documents=docs,
     embedding=embedding,
     collection_name="historical_figures",
-    persist_directory="chroma_db")
+    persist_directory="chroma_db"
+)
 vector_store.persist()
 print("Chroma vectorstore created and persisted.")
 
+# Prompt
 prompt_template = """
 You are HistoryBot, an expert in historical figures.
 Answer the user's question using only the context provided.
@@ -42,26 +48,35 @@ Context:
 Question:
 {question}
 """
-
 PROMPT = PromptTemplate(
-    template=prompt_template, input_variables=["context", "question"]
+    template=prompt_template,
+    input_variables=["context", "question"]
 )
 
-# Load your local LLM (like llama3 or mistral)
+# LLM
 llm = Ollama(model="gemma3")
 
-# Setup RetrievalQA with custom prompt
-qa_chain = RetrievalQA.from_chain_type(
-    llm=llm,
-    retriever = vector_store.as_retriever(),
-    chain_type="stuff",
-    chain_type_kwargs={"prompt": PROMPT}
+# Memory with chat history
+message_history = InMemoryChatMessageHistory()
+memory = ConversationBufferMemory(
+    memory_key="chat_history",
+    chat_memory=message_history,
+    return_messages=True
 )
 
-query = "Who was the first President of India?"
-result = qa_chain.invoke(query)
+# Conversational Retrieval QA chain
+qa_chain = ConversationalRetrievalChain.from_llm(
+    llm=llm,
+    retriever=vector_store.as_retriever(),
+    memory=memory,
+    combine_docs_chain_kwargs={"prompt": PROMPT}
+)
 
-print("Answer:", result['result'])
-print("\nSources:")
-for doc in result['source_documents']:
-    print(doc.metadata['source'])
+# Example queries
+query1 = "Who was Cleopatra?"
+response1 = qa_chain.invoke({"question": query1})
+print("Answer 1:", response1["answer"])
+
+query2 = "How many languages did she speak?"
+response2 = qa_chain.invoke({"question": query2})
+print("Answer 2:", response2["answer"])
