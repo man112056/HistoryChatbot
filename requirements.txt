@@ -6,3 +6,4 @@ pypdf
 chromadb
 langsmith
 python-dotenv
+gradio

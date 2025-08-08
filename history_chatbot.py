@@ -10,6 +10,7 @@ from langchain.chains.conversational_retrieval.base import ConversationalRetriev
 from langchain.memory import ConversationBufferMemory
 from langchain_core.chat_history import InMemoryChatMessageHistory
 from dotenv import load_dotenv
+import gradio as gr
 
 load_dotenv()
 
@@ -54,7 +55,7 @@ PROMPT = PromptTemplate(
 )
 
 # LLM
-llm = Ollama(model="gemma3")
+llm = Ollama(model="llama3:latest")
 
 # Memory with chat history
 message_history = InMemoryChatMessageHistory()
@@ -72,11 +73,33 @@ qa_chain = ConversationalRetrievalChain.from_llm(
     combine_docs_chain_kwargs={"prompt": PROMPT}
 )
 
-# Example queries
-query1 = "Who was Cleopatra?"
-response1 = qa_chain.invoke({"question": query1})
-print("Answer 1:", response1["answer"])
+# Gradio Interface
+def chat_historybot(user_input):
+    if not user_input.strip():
+        return "Please enter a question."
+    result = qa_chain.invoke({"question": user_input})
+    return result["answer"]
 
-query2 = "How many languages did she speak?"
-response2 = qa_chain.invoke({"question": query2})
-print("Answer 2:", response2["answer"])
+with gr.Blocks() as demo:
+    gr.Markdown("### Hello, I am HistoryBot. How can I assist you today?")
+    chatbot = gr.Chatbot()
+    with gr.Row():
+        txt = gr.Textbox(show_label=False, placeholder="Ask me anything about historical figures...")
+    with gr.Row():
+        submit_btn = gr.Button("Submit")
+        clear_btn = gr.Button("Clear History")
+
+    def respond(message, chat_history):
+        answer = chat_historybot(message)
+        chat_history.append((message, answer))
+        return "", chat_history
+
+    def clear():
+        message_history.clear()
+        return [], ""
+
+    submit_btn.click(respond, [txt, chatbot], [txt, chatbot])
+    clear_btn.click(fn=clear, outputs=[chatbot, txt])
+
+if __name__ == "__main__":
+    demo.launch()
