@@ -1,0 +1,8 @@
+langchain
+langchain-community
+pypdf
+langchain-community
+# faiss-cpu==1.7.4
+chromadb
+langsmith
+dotenv
