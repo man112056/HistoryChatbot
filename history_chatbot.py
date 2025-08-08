@@ -32,7 +32,7 @@ text_splitter = CharacterTextSplitter(
 docs = text_splitter.split_documents(document)
 print(f"Total number of chunks: {len(docs)}")
 
-# Embedding and Vector Store (optimized)
+# Embedding and Vector Store
 embedding = OllamaEmbeddings(model="granite-embedding:latest")
 
 if not os.path.exists(DB_DIR) or not os.listdir(DB_DIR):
