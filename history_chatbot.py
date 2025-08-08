@@ -80,7 +80,7 @@ def chat_historybot(user_input):
     result = qa_chain.invoke({"question": user_input})
     return result["answer"]
 
-with gr.Blocks() as demo:
+with gr.Blocks(css="body { background-color: #D6EF88 !important; }") as demo:
     gr.Markdown("### Hello, I am HistoryBot. How can I assist you today?")
     chatbot = gr.Chatbot()
     with gr.Row():
