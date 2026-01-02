@@ -25,24 +25,23 @@ documents = loader.load()
 
 text_splitter = RecursiveCharacterTextSplitter(
     chunk_size=400,
-    chunk_overlap=80,
+    chunk_overlap=100,
     separators=["\n\n", "\n", ".", " ", ""]
 )
 docs = text_splitter.split_documents(documents)
 
-print(f"📄 PDF pages loaded: {len(documents)}")
-print(f"✂️ Chunks created: {len(docs)}")
+print(f" PDF pages loaded: {len(documents)}")
+print(f" Chunks created: {len(docs)}")
 
 for i, d in enumerate(docs[:3]):
     print(f"\n--- Chunk {i+1} preview ---")
     print(d.page_content[:300])
 
-# --- Vector Store (SAFE INIT) ---
+# --- Vector Store ---
 embedding = OllamaEmbeddings(model="granite-embedding:latest")
 
-# IMPORTANT: create collection cleanly if DB was deleted
 if not os.path.exists(DB_DIR):
-    print("📦 Creating new Chroma database...")
+    print(" Creating new Chroma database...")
     vector_store = Chroma.from_documents(
         documents=docs,
         embedding=embedding,
@@ -50,20 +49,19 @@ if not os.path.exists(DB_DIR):
         collection_name=COLLECTION_NAME,
     )
 else:
-    print("📦 Loading existing Chroma database...")
+    print(" Loading existing Chroma database...")
     vector_store = Chroma(
         embedding_function=embedding,
         persist_directory=DB_DIR,
         collection_name=COLLECTION_NAME,
     )
 
-    # ✅ FIX: Reset collection and re-add docs to ensure new chunks are indexed
-    print("🧹 Resetting existing Chroma collection...")
+    print("Resetting existing Chroma collection...")
     vector_store.reset_collection()
     vector_store.add_documents(docs)
 
 retriever = vector_store.as_retriever(search_kwargs={"k": 3})
-print("📊 Total documents in Chroma:", vector_store._collection.count())
+print("Total documents in Chroma:", vector_store._collection.count())
 
 
 # --- 2. LLM & Chain Definition ---
@@ -120,11 +118,11 @@ def chat_historybot(user_input, session_id):
         ]
     )
     
-    # --- DEBUG: Check what Chroma retrieves --
+    # Check what Chroma retrieves --
     docs_retrieved = vector_store.similarity_search(user_input, k=3)
-    print(f"\n🔍 Query: {user_input}")
+    print(f"\n Query: {user_input}")
     for i, doc in enumerate(docs_retrieved):
-        print(f"📄 Chunk {i+1} Preview: {doc.page_content[:200]}")  # first 200 chars
+        print(f" Chunk {i+1} Preview: {doc.page_content[:200]}")  # first 200 chars
 
     answer = qa_chain.invoke(
         {
@@ -160,7 +158,7 @@ with gr.Blocks(title="History Chatbot") as demo:
 
         reply = chat_historybot(message, sid)
 
-        # ✅ REQUIRED messages format (prevents crash)
+        # REQUIRED messages format
         history.append({"role": "user", "content": message})
         history.append({"role": "assistant", "content": reply})
 
@@ -171,5 +169,5 @@ with gr.Blocks(title="History Chatbot") as demo:
 
 # --- 5. Run ---
 if __name__ == "__main__":
-    print("🚀 Starting History Chatbot...")
+    print(" Starting History Chatbot...")
     demo.launch()
