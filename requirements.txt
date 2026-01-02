@@ -1,9 +1,18 @@
-ollama
-langchain-ollama
-langchain
-langchain-community
-pypdf
-chromadb
-langsmith
-python-dotenv
+# Core LLM and Orchestration
+langchain>=0.3.0
+langchain-ollama>=0.2.0
+langchain-community>=0.3.0
+langchain-core>=0.3.0
+
+# Vector Database and Storage
+langchain-chroma>=0.1.4
+chromadb>=0.5.0
+
+# Document Processing and UI
+pypdf>=5.0.0
 gradio
+
+# Utilities and Observability
+python-dotenv>=1.0.1
+langsmith>=0.1.0
+ollama>=0.3.0

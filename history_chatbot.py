@@ -1,81 +1,78 @@
-from gc import collect
-from langchain_community.document_loaders import PyPDFLoader
-from langchain.text_splitter import CharacterTextSplitter
-from langchain_community.embeddings import OllamaEmbeddings
-from langchain_community.vectorstores import Chroma
-from langchain.prompts import PromptTemplate
-from langchain_community.llms import Ollama
-from langchain.chains import RetrievalQA
-from langchain_core.chat_history import InMemoryChatMessageHistory
+import os
+import uuid
+from operator import itemgetter
+import gradio as gr
 from dotenv import load_dotenv
 from langsmith import traceable
-import gradio as gr
-import os
-import time
-import uuid
 
+# LangChain Imports
+from langchain_community.document_loaders import PyPDFLoader
+from langchain_text_splitters import CharacterTextSplitter
+from langchain_ollama import OllamaEmbeddings, OllamaLLM
+from langchain_chroma import Chroma
+from langchain_core.prompts import PromptTemplate
+from langchain_core.chat_history import InMemoryChatMessageHistory
+
+# --- 1. Setup & Data Loading ---
 load_dotenv()
-
 DB_DIR = "chroma_db"
 COLLECTION_NAME = "historical_figures"
-print("LangSmith API Key:", os.getenv("LANGCHAIN_API_KEY"))
-print("LangSmith Tracing V2:", os.getenv("LANGCHAIN_TRACING_V2"))
 
-# Load and split the document
+# Load and split the PDF
 loader = PyPDFLoader("historical_figures.pdf")
-document = loader.load()
+documents = loader.load()
+text_splitter = CharacterTextSplitter(chunk_size=1200, chunk_overlap=100)
+docs = text_splitter.split_documents(documents)
 
-text_splitter = CharacterTextSplitter(
-    chunk_size=200,
-    chunk_overlap=30,
-)
-docs = text_splitter.split_documents(document)
-print(f"Total number of chunks: {len(docs)}")
-
-# Embedding and Vector Store
+# Initialize Vector Store
 embedding = OllamaEmbeddings(model="granite-embedding:latest")
+vector_store = Chroma(
+    embedding_function=embedding,
+    persist_directory=DB_DIR,
+    collection_name=COLLECTION_NAME,
+)
 
-if not os.path.exists(DB_DIR) or not os.listdir(DB_DIR):
-    print("Creating and persisting new vector store...")
-    vector_store = Chroma.from_documents(
-        documents=docs,
-        embedding=embedding,
-        collection_name=COLLECTION_NAME,
-        persist_directory=DB_DIR
-    )
-    vector_store.persist()
-else:
-    print("Loading existing vector store...")
-    vector_store = Chroma(
-        embedding_function=embedding,
-        persist_directory=DB_DIR,
-        collection_name=COLLECTION_NAME
-    )
+# Add documents to store if they aren't already there
+if not vector_store.get()['ids']:
+    vector_store.add_documents(docs)
 
-# Prompt template with context and chat history
+retriever = vector_store.as_retriever()
+
+# --- 2. LLM & Chain Definition ---
+llm = OllamaLLM(model="gemma:2b")
+
 prompt_template = """
-You are HistoryBot, an expert in historical figures.
-Answer the user's question using only the context provided.
-If you don't know the answer, just say you don't know. Don't make things up.
+You are HistoryBot, an expert in historical figures. 
+Answer the user's question using ONLY the context provided. If the answer isn't in the context, say you don't know.
 
-Conversation History:
+Conversation History: 
 {chat_history}
 
-Context:
+Context: 
 {context}
 
-Question:
+Question: 
 {question}
-"""
+
+Answer:"""
+
 PROMPT = PromptTemplate(
-    template=prompt_template,
+    template=prompt_template, 
     input_variables=["chat_history", "context", "question"]
 )
 
-# LLM
-llm = Ollama(model="gemma:2b")
+# Build a simple callable chain
+qa_chain = (
+    {
+        "context": itemgetter("question") | retriever,
+        "question": itemgetter("question"),
+        "chat_history": itemgetter("chat_history"),
+    }
+    | PROMPT
+    | llm
+)
 
-# Store to keep chat histories per session
+# --- 3. History Management ---
 store = {}
 
 def get_session_history(session_id):
@@ -85,52 +82,57 @@ def get_session_history(session_id):
 
 @traceable
 def chat_historybot(user_input, session_id):
-    if not user_input.strip():
-        return "Please enter a question."
-
     history = get_session_history(session_id)
-    history.add_user_message(user_input)
-
-    # Initialize the RetrievalQA chain
-    retriever = vector_store.as_retriever()
-    qa_chain = RetrievalQA.from_chain_type(
-        llm=llm,
-        chain_type="stuff",
-        retriever=retriever,
-        return_source_documents=True,
+    
+    # Format existing history for prompt
+    chat_history_text = "\n".join(
+        [f"{'User' if m.type == 'human' else 'Assistant'}: {m.content}" 
+         for m in history.messages]
     )
-
-    start = time.time()
-    result = qa_chain({"query": user_input})
-    answer = result["result"]
-    print(f"⏱️ Response time: {time.time() - start:.2f} seconds")
-
+    
+    # Run the chain
+    answer = qa_chain.invoke({
+        "question": user_input, 
+        "chat_history": chat_history_text
+    })
+    
+    # Save to memory
+    history.add_user_message(user_input)
     history.add_ai_message(answer)
-
+    
     return answer
 
-with gr.Blocks(css="body { background-color: #D6EF88 !important; }") as demo:
-    gr.Markdown("Hello, I am HistoryBot, your expert on historical figures. How can I assist you today?")
-    chatbot = gr.Chatbot()
+# --- 4. Gradio UI ---
+with gr.Blocks(title="History Chatbot") as demo:
+    gr.Markdown("# 🏛️ History Chatbot")
+    gr.Markdown("Ask me questions about the historical figures in your document.")
+    
+    chatbot = gr.Chatbot(label="History Assistant")
     session_id = gr.State(str(uuid.uuid4()))
+    
     with gr.Row():
-        txt = gr.Textbox(show_label=False, placeholder="Ask me anything about historical figures...")
-    with gr.Row():
-        submit_btn = gr.Button("Submit")
-        clear_btn = gr.Button("Clear History")
+        msg = gr.Textbox(
+            placeholder="Type your question here and press Enter...", 
+            show_label=False,
+            scale=4
+        )
+        clear = gr.Button("Clear Chat", scale=1)
 
-    def respond(message, chat_history, session_id):
-        answer = chat_historybot(message, session_id)
-        chat_history.append((message, answer))
-        return "", chat_history, session_id
+    def respond(message, chat_history, sess_id):
+        if not message.strip():
+            return "", chat_history
 
-    def clear(session_id):
-        if session_id in store:
-            store[session_id].clear()
-        return [], "", session_id
+        bot_message = chat_historybot(message, sess_id)
 
-    submit_btn.click(respond, [txt, chatbot, session_id], [txt, chatbot, session_id])
-    clear_btn.click(fn=clear, inputs=[session_id], outputs=[chatbot, txt, session_id])
+        # Use Gradio v6+ dict format
+        chat_history.append({"role": "user", "content": message})
+        chat_history.append({"role": "assistant", "content": bot_message})
+
+        return "", chat_history
+
+    msg.submit(respond, [msg, chatbot, session_id], [msg, chatbot])
+    clear.click(lambda: (None, []), None, [chatbot], queue=False)
 
 if __name__ == "__main__":
+    print("Starting History Chatbot...")
     demo.launch()

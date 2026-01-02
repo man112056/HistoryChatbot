@@ -1,0 +1,378 @@
+[
+    {
+        "label": "runpy",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "runpy",
+        "description": "runpy",
+        "detail": "runpy",
+        "documentation": {}
+    },
+    {
+        "label": "annotations",
+        "importPath": "__future__",
+        "description": "__future__",
+        "isExtraImport": true,
+        "detail": "__future__",
+        "documentation": {}
+    },
+    {
+        "label": "os",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "os",
+        "description": "os",
+        "detail": "os",
+        "documentation": {}
+    },
+    {
+        "label": "site",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "site",
+        "description": "site",
+        "detail": "site",
+        "documentation": {}
+    },
+    {
+        "label": "sys",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "sys",
+        "description": "sys",
+        "detail": "sys",
+        "documentation": {}
+    },
+    {
+        "label": "uuid",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "uuid",
+        "description": "uuid",
+        "detail": "uuid",
+        "documentation": {}
+    },
+    {
+        "label": "itemgetter",
+        "importPath": "operator",
+        "description": "operator",
+        "isExtraImport": true,
+        "detail": "operator",
+        "documentation": {}
+    },
+    {
+        "label": "gradio",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "gradio",
+        "description": "gradio",
+        "detail": "gradio",
+        "documentation": {}
+    },
+    {
+        "label": "load_dotenv",
+        "importPath": "dotenv",
+        "description": "dotenv",
+        "isExtraImport": true,
+        "detail": "dotenv",
+        "documentation": {}
+    },
+    {
+        "label": "traceable",
+        "importPath": "langsmith",
+        "description": "langsmith",
+        "isExtraImport": true,
+        "detail": "langsmith",
+        "documentation": {}
+    },
+    {
+        "label": "PyPDFLoader",
+        "importPath": "langchain_community.document_loaders",
+        "description": "langchain_community.document_loaders",
+        "isExtraImport": true,
+        "detail": "langchain_community.document_loaders",
+        "documentation": {}
+    },
+    {
+        "label": "CharacterTextSplitter",
+        "importPath": "langchain_text_splitters",
+        "description": "langchain_text_splitters",
+        "isExtraImport": true,
+        "detail": "langchain_text_splitters",
+        "documentation": {}
+    },
+    {
+        "label": "OllamaEmbeddings",
+        "importPath": "langchain_ollama",
+        "description": "langchain_ollama",
+        "isExtraImport": true,
+        "detail": "langchain_ollama",
+        "documentation": {}
+    },
+    {
+        "label": "OllamaLLM",
+        "importPath": "langchain_ollama",
+        "description": "langchain_ollama",
+        "isExtraImport": true,
+        "detail": "langchain_ollama",
+        "documentation": {}
+    },
+    {
+        "label": "Chroma",
+        "importPath": "langchain_chroma",
+        "description": "langchain_chroma",
+        "isExtraImport": true,
+        "detail": "langchain_chroma",
+        "documentation": {}
+    },
+    {
+        "label": "PromptTemplate",
+        "importPath": "langchain_core.prompts",
+        "description": "langchain_core.prompts",
+        "isExtraImport": true,
+        "detail": "langchain_core.prompts",
+        "documentation": {}
+    },
+    {
+        "label": "InMemoryChatMessageHistory",
+        "importPath": "langchain_core.chat_history",
+        "description": "langchain_core.chat_history",
+        "isExtraImport": true,
+        "detail": "langchain_core.chat_history",
+        "documentation": {}
+    },
+    {
+        "label": "bin_dir",
+        "kind": 5,
+        "importPath": ".venv.bin.activate_this",
+        "description": ".venv.bin.activate_this",
+        "peekOfCode": "bin_dir = os.path.dirname(abs_file)\nbase = bin_dir[: -len(\"bin\") - 1]  # strip away the bin part from the __file__, plus the path separator\n# prepend bin to PATH (this file is inside the bin directory)\nos.environ[\"PATH\"] = os.pathsep.join([bin_dir, *os.environ.get(\"PATH\", \"\").split(os.pathsep)])\nos.environ[\"VIRTUAL_ENV\"] = base  # virtual env is right above bin directory\nos.environ[\"VIRTUAL_ENV_PROMPT\"] = \"HistoryChatbot\" or os.path.basename(base)  # noqa: SIM222\n# add the virtual environments libraries to the host python import mechanism\nprev_length = len(sys.path)\nfor lib in \"../lib/python3.11/site-packages\".split(os.pathsep):\n    path = os.path.realpath(os.path.join(bin_dir, lib))",
+        "detail": ".venv.bin.activate_this",
+        "documentation": {}
+    },
+    {
+        "label": "base",
+        "kind": 5,
+        "importPath": ".venv.bin.activate_this",
+        "description": ".venv.bin.activate_this",
+        "peekOfCode": "base = bin_dir[: -len(\"bin\") - 1]  # strip away the bin part from the __file__, plus the path separator\n# prepend bin to PATH (this file is inside the bin directory)\nos.environ[\"PATH\"] = os.pathsep.join([bin_dir, *os.environ.get(\"PATH\", \"\").split(os.pathsep)])\nos.environ[\"VIRTUAL_ENV\"] = base  # virtual env is right above bin directory\nos.environ[\"VIRTUAL_ENV_PROMPT\"] = \"HistoryChatbot\" or os.path.basename(base)  # noqa: SIM222\n# add the virtual environments libraries to the host python import mechanism\nprev_length = len(sys.path)\nfor lib in \"../lib/python3.11/site-packages\".split(os.pathsep):\n    path = os.path.realpath(os.path.join(bin_dir, lib))\n    site.addsitedir(path)",
+        "detail": ".venv.bin.activate_this",
+        "documentation": {}
+    },
+    {
+        "label": "os.environ[\"PATH\"]",
+        "kind": 5,
+        "importPath": ".venv.bin.activate_this",
+        "description": ".venv.bin.activate_this",
+        "peekOfCode": "os.environ[\"PATH\"] = os.pathsep.join([bin_dir, *os.environ.get(\"PATH\", \"\").split(os.pathsep)])\nos.environ[\"VIRTUAL_ENV\"] = base  # virtual env is right above bin directory\nos.environ[\"VIRTUAL_ENV_PROMPT\"] = \"HistoryChatbot\" or os.path.basename(base)  # noqa: SIM222\n# add the virtual environments libraries to the host python import mechanism\nprev_length = len(sys.path)\nfor lib in \"../lib/python3.11/site-packages\".split(os.pathsep):\n    path = os.path.realpath(os.path.join(bin_dir, lib))\n    site.addsitedir(path)\nsys.path[:] = sys.path[prev_length:] + sys.path[0:prev_length]\nsys.real_prefix = sys.prefix",
+        "detail": ".venv.bin.activate_this",
+        "documentation": {}
+    },
+    {
+        "label": "os.environ[\"VIRTUAL_ENV\"]",
+        "kind": 5,
+        "importPath": ".venv.bin.activate_this",
+        "description": ".venv.bin.activate_this",
+        "peekOfCode": "os.environ[\"VIRTUAL_ENV\"] = base  # virtual env is right above bin directory\nos.environ[\"VIRTUAL_ENV_PROMPT\"] = \"HistoryChatbot\" or os.path.basename(base)  # noqa: SIM222\n# add the virtual environments libraries to the host python import mechanism\nprev_length = len(sys.path)\nfor lib in \"../lib/python3.11/site-packages\".split(os.pathsep):\n    path = os.path.realpath(os.path.join(bin_dir, lib))\n    site.addsitedir(path)\nsys.path[:] = sys.path[prev_length:] + sys.path[0:prev_length]\nsys.real_prefix = sys.prefix\nsys.prefix = base",
+        "detail": ".venv.bin.activate_this",
+        "documentation": {}
+    },
+    {
+        "label": "os.environ[\"VIRTUAL_ENV_PROMPT\"]",
+        "kind": 5,
+        "importPath": ".venv.bin.activate_this",
+        "description": ".venv.bin.activate_this",
+        "peekOfCode": "os.environ[\"VIRTUAL_ENV_PROMPT\"] = \"HistoryChatbot\" or os.path.basename(base)  # noqa: SIM222\n# add the virtual environments libraries to the host python import mechanism\nprev_length = len(sys.path)\nfor lib in \"../lib/python3.11/site-packages\".split(os.pathsep):\n    path = os.path.realpath(os.path.join(bin_dir, lib))\n    site.addsitedir(path)\nsys.path[:] = sys.path[prev_length:] + sys.path[0:prev_length]\nsys.real_prefix = sys.prefix\nsys.prefix = base",
+        "detail": ".venv.bin.activate_this",
+        "documentation": {}
+    },
+    {
+        "label": "prev_length",
+        "kind": 5,
+        "importPath": ".venv.bin.activate_this",
+        "description": ".venv.bin.activate_this",
+        "peekOfCode": "prev_length = len(sys.path)\nfor lib in \"../lib/python3.11/site-packages\".split(os.pathsep):\n    path = os.path.realpath(os.path.join(bin_dir, lib))\n    site.addsitedir(path)\nsys.path[:] = sys.path[prev_length:] + sys.path[0:prev_length]\nsys.real_prefix = sys.prefix\nsys.prefix = base",
+        "detail": ".venv.bin.activate_this",
+        "documentation": {}
+    },
+    {
+        "label": "sys.path[:]",
+        "kind": 5,
+        "importPath": ".venv.bin.activate_this",
+        "description": ".venv.bin.activate_this",
+        "peekOfCode": "sys.path[:] = sys.path[prev_length:] + sys.path[0:prev_length]\nsys.real_prefix = sys.prefix\nsys.prefix = base",
+        "detail": ".venv.bin.activate_this",
+        "documentation": {}
+    },
+    {
+        "label": "sys.real_prefix",
+        "kind": 5,
+        "importPath": ".venv.bin.activate_this",
+        "description": ".venv.bin.activate_this",
+        "peekOfCode": "sys.real_prefix = sys.prefix\nsys.prefix = base",
+        "detail": ".venv.bin.activate_this",
+        "documentation": {}
+    },
+    {
+        "label": "sys.prefix",
+        "kind": 5,
+        "importPath": ".venv.bin.activate_this",
+        "description": ".venv.bin.activate_this",
+        "peekOfCode": "sys.prefix = base",
+        "detail": ".venv.bin.activate_this",
+        "documentation": {}
+    },
+    {
+        "label": "get_session_history",
+        "kind": 2,
+        "importPath": "history_chatbot",
+        "description": "history_chatbot",
+        "peekOfCode": "def get_session_history(session_id):\n    if session_id not in store:\n        store[session_id] = InMemoryChatMessageHistory()\n    return store[session_id]\n@traceable\ndef chat_historybot(user_input, session_id):\n    history = get_session_history(session_id)\n    # Format existing history for prompt\n    chat_history_text = \"\\n\".join(\n        [f\"{'User' if m.type == 'human' else 'Assistant'}: {m.content}\" ",
+        "detail": "history_chatbot",
+        "documentation": {}
+    },
+    {
+        "label": "chat_historybot",
+        "kind": 2,
+        "importPath": "history_chatbot",
+        "description": "history_chatbot",
+        "peekOfCode": "def chat_historybot(user_input, session_id):\n    history = get_session_history(session_id)\n    # Format existing history for prompt\n    chat_history_text = \"\\n\".join(\n        [f\"{'User' if m.type == 'human' else 'Assistant'}: {m.content}\" \n         for m in history.messages]\n    )\n    # Run the chain\n    answer = qa_chain.invoke({\n        \"question\": user_input, ",
+        "detail": "history_chatbot",
+        "documentation": {}
+    },
+    {
+        "label": "DB_DIR",
+        "kind": 5,
+        "importPath": "history_chatbot",
+        "description": "history_chatbot",
+        "peekOfCode": "DB_DIR = \"chroma_db\"\nCOLLECTION_NAME = \"historical_figures\"\n# Load and split the PDF\nloader = PyPDFLoader(\"historical_figures.pdf\")\ndocuments = loader.load()\ntext_splitter = CharacterTextSplitter(chunk_size=1200, chunk_overlap=100)\ndocs = text_splitter.split_documents(documents)\n# Initialize Vector Store\nembedding = OllamaEmbeddings(model=\"granite-embedding:latest\")\nvector_store = Chroma(",
+        "detail": "history_chatbot",
+        "documentation": {}
+    },
+    {
+        "label": "COLLECTION_NAME",
+        "kind": 5,
+        "importPath": "history_chatbot",
+        "description": "history_chatbot",
+        "peekOfCode": "COLLECTION_NAME = \"historical_figures\"\n# Load and split the PDF\nloader = PyPDFLoader(\"historical_figures.pdf\")\ndocuments = loader.load()\ntext_splitter = CharacterTextSplitter(chunk_size=1200, chunk_overlap=100)\ndocs = text_splitter.split_documents(documents)\n# Initialize Vector Store\nembedding = OllamaEmbeddings(model=\"granite-embedding:latest\")\nvector_store = Chroma(\n    embedding_function=embedding,",
+        "detail": "history_chatbot",
+        "documentation": {}
+    },
+    {
+        "label": "loader",
+        "kind": 5,
+        "importPath": "history_chatbot",
+        "description": "history_chatbot",
+        "peekOfCode": "loader = PyPDFLoader(\"historical_figures.pdf\")\ndocuments = loader.load()\ntext_splitter = CharacterTextSplitter(chunk_size=1200, chunk_overlap=100)\ndocs = text_splitter.split_documents(documents)\n# Initialize Vector Store\nembedding = OllamaEmbeddings(model=\"granite-embedding:latest\")\nvector_store = Chroma(\n    embedding_function=embedding,\n    persist_directory=DB_DIR,\n    collection_name=COLLECTION_NAME,",
+        "detail": "history_chatbot",
+        "documentation": {}
+    },
+    {
+        "label": "documents",
+        "kind": 5,
+        "importPath": "history_chatbot",
+        "description": "history_chatbot",
+        "peekOfCode": "documents = loader.load()\ntext_splitter = CharacterTextSplitter(chunk_size=1200, chunk_overlap=100)\ndocs = text_splitter.split_documents(documents)\n# Initialize Vector Store\nembedding = OllamaEmbeddings(model=\"granite-embedding:latest\")\nvector_store = Chroma(\n    embedding_function=embedding,\n    persist_directory=DB_DIR,\n    collection_name=COLLECTION_NAME,\n)",
+        "detail": "history_chatbot",
+        "documentation": {}
+    },
+    {
+        "label": "text_splitter",
+        "kind": 5,
+        "importPath": "history_chatbot",
+        "description": "history_chatbot",
+        "peekOfCode": "text_splitter = CharacterTextSplitter(chunk_size=1200, chunk_overlap=100)\ndocs = text_splitter.split_documents(documents)\n# Initialize Vector Store\nembedding = OllamaEmbeddings(model=\"granite-embedding:latest\")\nvector_store = Chroma(\n    embedding_function=embedding,\n    persist_directory=DB_DIR,\n    collection_name=COLLECTION_NAME,\n)\n# Add documents to store if they aren't already there",
+        "detail": "history_chatbot",
+        "documentation": {}
+    },
+    {
+        "label": "docs",
+        "kind": 5,
+        "importPath": "history_chatbot",
+        "description": "history_chatbot",
+        "peekOfCode": "docs = text_splitter.split_documents(documents)\n# Initialize Vector Store\nembedding = OllamaEmbeddings(model=\"granite-embedding:latest\")\nvector_store = Chroma(\n    embedding_function=embedding,\n    persist_directory=DB_DIR,\n    collection_name=COLLECTION_NAME,\n)\n# Add documents to store if they aren't already there\nif not vector_store.get()['ids']:",
+        "detail": "history_chatbot",
+        "documentation": {}
+    },
+    {
+        "label": "embedding",
+        "kind": 5,
+        "importPath": "history_chatbot",
+        "description": "history_chatbot",
+        "peekOfCode": "embedding = OllamaEmbeddings(model=\"granite-embedding:latest\")\nvector_store = Chroma(\n    embedding_function=embedding,\n    persist_directory=DB_DIR,\n    collection_name=COLLECTION_NAME,\n)\n# Add documents to store if they aren't already there\nif not vector_store.get()['ids']:\n    vector_store.add_documents(docs)\nretriever = vector_store.as_retriever()",
+        "detail": "history_chatbot",
+        "documentation": {}
+    },
+    {
+        "label": "vector_store",
+        "kind": 5,
+        "importPath": "history_chatbot",
+        "description": "history_chatbot",
+        "peekOfCode": "vector_store = Chroma(\n    embedding_function=embedding,\n    persist_directory=DB_DIR,\n    collection_name=COLLECTION_NAME,\n)\n# Add documents to store if they aren't already there\nif not vector_store.get()['ids']:\n    vector_store.add_documents(docs)\nretriever = vector_store.as_retriever()\n# --- 2. LLM & Chain Definition ---",
+        "detail": "history_chatbot",
+        "documentation": {}
+    },
+    {
+        "label": "retriever",
+        "kind": 5,
+        "importPath": "history_chatbot",
+        "description": "history_chatbot",
+        "peekOfCode": "retriever = vector_store.as_retriever()\n# --- 2. LLM & Chain Definition ---\nllm = OllamaLLM(model=\"gemma:2b\")\nprompt_template = \"\"\"\nYou are HistoryBot, an expert in historical figures. \nAnswer the user's question using ONLY the context provided. If the answer isn't in the context, say you don't know.\nConversation History: \n{chat_history}\nContext: \n{context}",
+        "detail": "history_chatbot",
+        "documentation": {}
+    },
+    {
+        "label": "llm",
+        "kind": 5,
+        "importPath": "history_chatbot",
+        "description": "history_chatbot",
+        "peekOfCode": "llm = OllamaLLM(model=\"gemma:2b\")\nprompt_template = \"\"\"\nYou are HistoryBot, an expert in historical figures. \nAnswer the user's question using ONLY the context provided. If the answer isn't in the context, say you don't know.\nConversation History: \n{chat_history}\nContext: \n{context}\nQuestion: \n{question}",
+        "detail": "history_chatbot",
+        "documentation": {}
+    },
+    {
+        "label": "prompt_template",
+        "kind": 5,
+        "importPath": "history_chatbot",
+        "description": "history_chatbot",
+        "peekOfCode": "prompt_template = \"\"\"\nYou are HistoryBot, an expert in historical figures. \nAnswer the user's question using ONLY the context provided. If the answer isn't in the context, say you don't know.\nConversation History: \n{chat_history}\nContext: \n{context}\nQuestion: \n{question}\nAnswer:\"\"\"",
+        "detail": "history_chatbot",
+        "documentation": {}
+    },
+    {
+        "label": "PROMPT",
+        "kind": 5,
+        "importPath": "history_chatbot",
+        "description": "history_chatbot",
+        "peekOfCode": "PROMPT = PromptTemplate(\n    template=prompt_template, \n    input_variables=[\"chat_history\", \"context\", \"question\"]\n)\n# Build a simple callable chain\nqa_chain = (\n    {\n        \"context\": itemgetter(\"question\") | retriever,\n        \"question\": itemgetter(\"question\"),\n        \"chat_history\": itemgetter(\"chat_history\"),",
+        "detail": "history_chatbot",
+        "documentation": {}
+    },
+    {
+        "label": "qa_chain",
+        "kind": 5,
+        "importPath": "history_chatbot",
+        "description": "history_chatbot",
+        "peekOfCode": "qa_chain = (\n    {\n        \"context\": itemgetter(\"question\") | retriever,\n        \"question\": itemgetter(\"question\"),\n        \"chat_history\": itemgetter(\"chat_history\"),\n    }\n    | PROMPT\n    | llm\n)\n# --- 3. History Management ---",
+        "detail": "history_chatbot",
+        "documentation": {}
+    },
+    {
+        "label": "store",
+        "kind": 5,
+        "importPath": "history_chatbot",
+        "description": "history_chatbot",
+        "peekOfCode": "store = {}\ndef get_session_history(session_id):\n    if session_id not in store:\n        store[session_id] = InMemoryChatMessageHistory()\n    return store[session_id]\n@traceable\ndef chat_historybot(user_input, session_id):\n    history = get_session_history(session_id)\n    # Format existing history for prompt\n    chat_history_text = \"\\n\".join(",
+        "detail": "history_chatbot",
+        "documentation": {}
+    },
+    {
+        "label": "main",
+        "kind": 2,
+        "importPath": "main",
+        "description": "main",
+        "peekOfCode": "def main():\n    print(\"Hello from historychatbot!\")\nif __name__ == \"__main__\":\n    main()",
+        "detail": "main",
+        "documentation": {}
+    }
+]
